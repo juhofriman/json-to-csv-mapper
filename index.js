@@ -11,11 +11,11 @@ module.exports =  {
 
       _.each(mapSpec, function(field) {
 
-        var t = null;
+        var t = object;
 
         if(!_.isUndefined(field.f)){
-          _.each(field.f.split(), function(token){
-            t = object[token];
+          _.each(field.f.split("."), function(token){
+            t = t[token];
           })
           if(!_.isUndefined(t)){
             csvRow.push(t);

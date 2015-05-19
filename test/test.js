@@ -23,6 +23,17 @@ describe('json-csv-mapper node module', function () {
                        [{foo: "Bar", character: "Dilbert"},
                         {foo: "Baz", character: "Garfield"}],
                        [{"f": "foo"}, {"f": "character"}]));
-
+  });
+  it('must support nested mappings', function() {
+    assert.deepEqual([["Baz"]],
+                     jsonCsvMapper.jsonToCsv([{foo: { bar: "Baz" }}], [{"f": "foo.bar"}]));
+  });
+  it('must support deeply nested mappings', function(){
+      assert.deepEqual([["Baz", "Only secrets here"]],
+                     jsonCsvMapper.jsonToCsv(
+                       [{foo: { deeply: { nested: {bar: "Baz", nothere: "Can't seemee!"}},
+                               secrets: "Only secrets here",
+                               ignoredPath: {} }}],
+                       [{"f": "foo.deeply.nested.bar"}, {"f": "foo.secrets"}]));
   });
 });
