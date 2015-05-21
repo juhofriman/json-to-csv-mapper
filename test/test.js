@@ -29,7 +29,7 @@ describe('json-csv-mapper node module', function () {
                      jsonCsvMapper.jsonToCsv([{foo: { bar: "Baz" }}], [{"f": "foo.bar"}]));
   });
   it('must support deeply nested mappings', function(){
-      assert.deepEqual([["Baz", "Only secrets here"]],
+    assert.deepEqual([["Baz", "Only secrets here"]],
                      jsonCsvMapper.jsonToCsv(
                        [{foo: { deeply: { nested: {bar: "Baz", nothere: "Can't seemee!"}},
                                secrets: "Only secrets here",
@@ -37,17 +37,17 @@ describe('json-csv-mapper node module', function () {
                        [{"f": "foo.deeply.nested.bar"}, {"f": "foo.secrets"}]));
   });
   it('must run callback if given', function() {
-     assert.deepEqual([["BAR"]],
+    assert.deepEqual([["BAR"]],
                      jsonCsvMapper.jsonToCsv([{foo: "bar"}],
                                              [{"f": "foo", cb: function(data) {return data.toUpperCase(); }}]));
   });
   it('must publish common use callbacks', function() {
-     assert.deepEqual([["\"bar\""]],
+    assert.deepEqual([["\"bar\""]],
                      jsonCsvMapper.jsonToCsv([{foo: "bar"}],
                                              [{"f": "foo", cb: jsonCsvMapper.CB_QUOTE }]));
   });
   it('must run multiple callbacks if cb is an array', function() {
-     assert.deepEqual([["\"BAR\""]],
+    assert.deepEqual([["\"BAR\""]],
                      jsonCsvMapper.jsonToCsv([{foo: "bar"}],
                                              [{"f": "foo",
                                                cb: [jsonCsvMapper.CB_QUOTE,
@@ -55,11 +55,10 @@ describe('json-csv-mapper node module', function () {
   });
   it('must support value mapping', function() {
     assert.deepEqual([["Jill", "female"], ["Jack", "male"]],
-                      jsonCsvMapper.jsonToCsv([
-                        {name: "Jill",
-                         sex: 1},
-                        {name: "Jack",
-                         sex: 2},
-                      ],[{f: "name"}, {f: "sex", m: {1: "female", 2: "male"}}]));
+                     jsonCsvMapper.jsonToCsv([{name: "Jill", sex: 1},
+                                               {name: "Jack", sex: 2}],
+                                              [{f: "name"},
+                                               {f: "sex", m: {1: "female", 2: "male"}}]));
   });
+
 });
