@@ -2,6 +2,18 @@
 
 var _ = require('underscore-node');
 
+function getCallbacksArray(mappingField) {
+  if(_.isUndefined(mappingField.cb)) {
+    return [];
+  }
+  if(_.isArray(mappingField.cb)) {
+    return mappingField.cb;
+  }
+  if(_.isFunction(mappingField.cb)) {
+    return [mappingField.cb];
+  }
+}
+
 module.exports =  {
   CB_QUOTE: function(data) {
     return '"' + data + '"';
@@ -12,7 +24,7 @@ module.exports =  {
     _.each(mapSpec, function(field) {
       if(!_.isUndefined(field.f)){
         var path = field.f.split(".");
-        paths.push({path: path, cb: field.cb});
+        paths.push({path: path, cb: getCallbacksArray(field)});
       }
     });
 
@@ -29,11 +41,11 @@ module.exports =  {
           }
         });
         if(!_.isUndefined(entry)) {
-          if(!_.isUndefined(path.cb)) {
-            csvRow.push(path.cb(entry));
-          } else {
-            csvRow.push(entry);
-          }
+          _.each(path.cb, function(callback) {
+            entry = callback(entry);
+          });
+          csvRow.push(entry);
+
         }
       });
 

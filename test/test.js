@@ -46,4 +46,11 @@ describe('json-csv-mapper node module', function () {
                      jsonCsvMapper.jsonToCsv([{foo: "bar"}],
                                              [{"f": "foo", cb: jsonCsvMapper.CB_QUOTE }]));
   });
+  it('must run multiple callbacks if cb is an array', function() {
+     assert.deepEqual([["\"BAR\""]],
+                     jsonCsvMapper.jsonToCsv([{foo: "bar"}],
+                                             [{"f": "foo",
+                                               cb: [jsonCsvMapper.CB_QUOTE,
+                                                    function(data) {return data.toUpperCase(); }]} ]));
+  });
 });
