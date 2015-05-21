@@ -12,6 +12,8 @@ $ npm install --save json-csv-mapper
 
 ## Usage
 
+see battle-test.js :)
+
 ```js
 var jsonCsvMapper = require('json-csv-mapper');
 
