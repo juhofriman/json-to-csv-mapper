@@ -14,45 +14,53 @@ function getCallbacksArray(mappingField) {
   }
 }
 
+function getMappingPaths(mapSpec) {
+  var paths = [];
+  _.each(mapSpec, function(field) {
+    if(!_.isUndefined(field.f)){
+      var path = field.f.split(".");
+      paths.push({path: path, cb: getCallbacksArray(field)});
+    }
+  });
+  return paths;
+}
+
+function runCallbacks(entry, callbacks) {
+  _.each(callbacks, function(callback) {
+      entry = callback(entry);
+  });
+  return entry;
+}
+
+function createCsvRowFromObject(object, paths) {
+  var csvRow = [];
+  _.each(paths, function(path) {
+    var entry = object;
+    _.each(path.path, function(token) {
+      if(!_.isUndefined(entry)) {
+        entry = entry[token];
+      }
+    });
+    if(!_.isUndefined(entry)) {
+      csvRow.push(runCallbacks(entry, path.cb));
+    }
+  });
+  return csvRow;
+}
+
 module.exports =  {
   CB_QUOTE: function(data) {
     return '"' + data + '"';
   },
-  jsonToCsv: function(json, mapSpec) {
-    // This implementation is total load of bollocks and purely prototype
-    var paths = [];
-    _.each(mapSpec, function(field) {
-      if(!_.isUndefined(field.f)){
-        var path = field.f.split(".");
-        paths.push({path: path, cb: getCallbacksArray(field)});
-      }
+  jsonToCsv: function(objects, mapSpec) {
+
+    var paths = getMappingPaths(mapSpec);
+
+    var csvRows = [];
+    _.each(objects, function(object) {
+      csvRows.push(createCsvRowFromObject(object, paths));
     });
 
-    var csvRepresentation = [];
-    _.each(json, function(object) {
-
-      var csvRow = [];
-
-      _.each(paths, function(path) {
-        var entry = object;
-        _.each(path.path, function(token) {
-          if(!_.isUndefined(entry)) {
-            entry = entry[token];
-          }
-        });
-        if(!_.isUndefined(entry)) {
-          _.each(path.cb, function(callback) {
-            entry = callback(entry);
-          });
-          csvRow.push(entry);
-
-        }
-      });
-
-      csvRepresentation.push(csvRow);
-
-    });
-
-    return csvRepresentation;
+    return csvRows;
   }
 };
