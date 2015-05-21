@@ -66,6 +66,9 @@ module.exports =  {
   CB_QUOTE: function(data) {
     return '"' + data + '"';
   },
+  CB_REMOVE_TRAILING_NEWLINE: function(data) {
+    return data.replace(/^\s+|\s+$/g, "");
+  },
   jsonToArray: function(objects, mapSpec) {
 
     var paths = getMappingPaths(mapSpec);
