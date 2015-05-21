@@ -19,7 +19,10 @@ function getMappingPaths(mapSpec) {
   _.each(mapSpec, function(field) {
     if(!_.isUndefined(field.f)){
       var path = field.f.split(".");
-      paths.push({path: path, cb: getCallbacksArray(field)});
+      paths.push(
+        {path: path,
+         cb: getCallbacksArray(field),
+         mappings: field.m });
     }
   });
   return paths;
@@ -32,6 +35,17 @@ function runCallbacks(entry, callbacks) {
   return entry;
 }
 
+function mapValue(entry, mappings) {
+  return mappings[entry];
+}
+
+function modify(entry, path) {
+  if(!_.isUndefined(path.mappings)) {
+    entry = mapValue(entry, path.mappings);
+  }
+  return runCallbacks(entry, path.cb);
+}
+
 function createCsvRowFromObject(object, paths) {
   var csvRow = [];
   _.each(paths, function(path) {
@@ -42,7 +56,7 @@ function createCsvRowFromObject(object, paths) {
       }
     });
     if(!_.isUndefined(entry)) {
-      csvRow.push(runCallbacks(entry, path.cb));
+      csvRow.push(modify(entry, path));
     }
   });
   return csvRow;

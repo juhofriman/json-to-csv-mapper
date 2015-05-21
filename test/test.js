@@ -53,4 +53,13 @@ describe('json-csv-mapper node module', function () {
                                                cb: [jsonCsvMapper.CB_QUOTE,
                                                     function(data) {return data.toUpperCase(); }]} ]));
   });
+  it('must support value mapping', function() {
+    assert.deepEqual([["Jill", "female"], ["Jack", "male"]],
+                      jsonCsvMapper.jsonToCsv([
+                        {name: "Jill",
+                         sex: 1},
+                        {name: "Jack",
+                         sex: 2},
+                      ],[{f: "name"}, {f: "sex", m: {1: "female", 2: "male"}}]));
+  });
 });
