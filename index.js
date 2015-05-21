@@ -66,7 +66,7 @@ module.exports =  {
   CB_QUOTE: function(data) {
     return '"' + data + '"';
   },
-  jsonToCsv: function(objects, mapSpec) {
+  jsonToArray: function(objects, mapSpec) {
 
     var paths = getMappingPaths(mapSpec);
 
@@ -76,5 +76,12 @@ module.exports =  {
     });
 
     return csvRows;
+  },
+  materialize: function(objects, mapSpec) {
+    var csv = "";
+    _.each(this.jsonToArray(objects, mapSpec), function(row) {
+      csv += row.join(",") + "\n";
+    });
+    return csv;
   }
 };
