@@ -36,4 +36,14 @@ describe('json-csv-mapper node module', function () {
                                ignoredPath: {} }}],
                        [{"f": "foo.deeply.nested.bar"}, {"f": "foo.secrets"}]));
   });
+  it('must run callback if given', function() {
+     assert.deepEqual([["BAR"]],
+                     jsonCsvMapper.jsonToCsv([{foo: "bar"}],
+                                             [{"f": "foo", cb: function(data) {return data.toUpperCase(); }}]));
+  });
+  it('must publish common use callbacks', function() {
+     assert.deepEqual([["\"bar\""]],
+                     jsonCsvMapper.jsonToCsv([{foo: "bar"}],
+                                             [{"f": "foo", cb: jsonCsvMapper.CB_QUOTE }]));
+  });
 });
