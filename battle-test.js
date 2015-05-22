@@ -27,10 +27,21 @@ var cases = [
              .field("name.first")
              .field("name.last")
              .build()
+  },
+  { file: "./battle-test-data/nested-contacts.json",
+   mapping: jsonCsvMapper.spec()
+             .field("age")
+             .field("eyeColor")
+             .field("name").valueCallbacks(function(name) { return name.first + " " + name.last; })
+             .build()
   }
 ];
 
-console.log(process.argv[2]);
+if(process.argv.length < 3) {
+  console.log("Pass case index as an argument");
+  process.exit(1);
+}
+
 console.log(jsonCsvMapper.materialize(
   JSON.parse(fs.readFileSync(cases[process.argv[2]].file, 'utf8')),
     cases[process.argv[2]].mapping));

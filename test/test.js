@@ -94,6 +94,12 @@ describe('json-csv-mapper node module', function () {
                                              [{"f": "foo", cb: function(data) {return data.toUpperCase(); }}]));
   });
 
+  it('must allow running callbacks to nested fields for formatting', function() {
+    assert.deepEqual([["Rick Wakeman"]],
+                     jsonCsvMapper.jsonToArray([{name: {first: "Rick", last: "Wakeman"}}],
+                                             [{"f": "name", cb: function(data) {return data.first + " " + data.last; }}]));
+  });
+
   it('must publish common use callbacks', function() {
     assert.deepEqual([["\"bar\""]],
                      jsonCsvMapper.jsonToArray([{foo: "bar"}],
