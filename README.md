@@ -1,6 +1,6 @@
 # [![Build Status](https://travis-ci.org/juhofriman/json-to-csv-mapper.svg?branch=master)](https://travis-ci.org/juhofriman/json-to-csv-mapper)
 
-> It maps json to csv using dsl
+> It maps json to csv using builder for defining mapping
 
 
 ## Install
@@ -12,13 +12,54 @@ $ npm install --save json-csv-mapper
 
 ## Usage
 
-see battle-test.js :)
+Naming of functions is due to change. Note also that it does not quarantee to produce valid csv if your spec() does not handle values correctly.
 
 ```js
 var jsonCsvMapper = require('json-csv-mapper');
 
-jsonCsvMapper('Rainbow');
+// When you have an array of json objects
+var data = [
+  { id: 1,
+    name: {
+      first: "Jack",
+      last: "kerouac"
+    },
+  about: "He's super interesting writer and \"boheme\"" },
+  { id: 2,
+    name: {
+      first: "Ernest",
+      last: "Hemingway"
+    },
+  about: "He wrote \"The Man and the Sea\"" },
+];
+
+// You can map them to csv using builder spec
+var csvStr = jsonCsvMapper.materialize(data, jsonCsvMapper.spec()
+        .field("id")
+        .field("name.first")
+        .field("name.last")
+        .field("about").escape()
+        .build());
+
+
+// Should output
+1,Jack,kerouac,"He's super interesting writer and ""boheme"""
+2,Ernest,Hemingway,"He wrote ""The Man and the Sea"""
+
+// You can get header fields and use callback functions for formatting values (even nested values like in this case)
+// If you have date data you can use something like moment.js for formatting on those callbacks
+var csvStr = jsonCsvMapper.materialize(data, jsonCsvMapper.spec({addHeader: true})
+        .field("id")
+        .field("name").valueCallbacks(function(name) { return name.first + " " + name.last; })
+        .field("about").escape()
+        .build());
+
+// Should output
+id,name,about
+1,Jack kerouac,"He's super interesting writer and ""boheme"""
+2,Ernest Hemingway,"He wrote ""The Man and the Sea"""
 ```
+What a nice piece of software!
 
 
 ## License
