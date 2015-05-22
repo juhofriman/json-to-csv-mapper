@@ -69,6 +69,33 @@ module.exports =  {
   CB_REMOVE_TRAILING_NEWLINE: function(data) {
     return data.replace(/^\s+|\s+$/g, "");
   },
+  spec: function() {
+    return {
+      fields: [],
+      currentField: null,
+      field: function(path) {
+        if(this.currentField != null) {
+          this.fields.push(this.currentField);
+        }
+        this.currentField = {f: path};
+        return this;
+      },
+      valueMapping: function(mapping) {
+        this.currentField.m = mapping;
+        return this;
+      },
+      valueCallbacks: function() {
+        this.currentField.cb = Array.prototype.slice.call(arguments);
+        return this;
+      },
+      build: function() {
+        if(this.currentField != null) {
+          this.fields.push(this.currentField);
+        }
+        return this.fields;
+      }
+    };
+  },
   jsonToArray: function(objects, mapSpec) {
 
     var paths = getMappingPaths(mapSpec);
