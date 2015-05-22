@@ -64,7 +64,7 @@ function createCsvRowFromObject(object, paths) {
 
 module.exports =  {
   CB_QUOTE: function(data) {
-    return '"' + data + '"';
+    return '"' + data.replace(/"/g, '""') + '"';
   },
   CB_REMOVE_TRAILING_NEWLINE: function(data) {
     return data.replace(/^\s+|\s+$/g, "");

@@ -100,6 +100,16 @@ describe('json-csv-mapper node module', function () {
                                                     function(data) {return data.toUpperCase(); }]} ]));
   });
 
+  it('must escape contained " when CB_QUOTE callback is invoked', function() {
+    assert.deepEqual([['"this ""is"" it!"']],
+                     jsonCsvMapper.jsonToArray([{foo: 'this "is" it!'}],
+                                             [{"f": "foo", cb: jsonCsvMapper.CB_QUOTE }]));
+    assert.deepEqual([['"Yo """""""" man!"']],
+                     jsonCsvMapper.jsonToArray([{foo: 'Yo """" man!'}],
+                                             [{"f": "foo", cb: jsonCsvMapper.CB_QUOTE }]));
+
+  });
+
   it('must support value mapping', function() {
     assert.deepEqual([["Jill", "female"], ["Jack", "male"]],
                      jsonCsvMapper.jsonToArray([{name: "Jill", sex: 1},
