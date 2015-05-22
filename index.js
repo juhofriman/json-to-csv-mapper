@@ -71,8 +71,9 @@ module.exports =  {
   CB_REMOVE_TRAILING_NEWLINE: function(data) {
     return data.replace(/^\s+|\s+$/g, "");
   },
-  spec: function() {
+  spec: function(config) {
     return {
+      config: config || { addHeader: false },
       fields: [],
       currentField: null,
       field: function(path) {
@@ -102,15 +103,23 @@ module.exports =  {
         if(this.currentField != null) {
           this.fields.push(this.currentField);
         }
-        return this.fields;
+        return this;
       }
     };
   },
   jsonToArray: function(objects, mapSpec) {
 
-    var paths = getMappingPaths(mapSpec);
-
+    var paths = getMappingPaths(mapSpec.fields);
     var csvRows = [];
+    if(mapSpec.config.addHeader) {
+
+      var headerRow = [];
+      _.each(paths, function(p) {
+        headerRow.push(p.path.join("."));
+      });
+      csvRows.push(headerRow);
+    }
+
     _.each(objects, function(object) {
       csvRows.push(createCsvRowFromObject(object, paths));
     });

@@ -4,8 +4,9 @@ var fs = require('fs');
 var jsonCsvMapper = require('./');
 
 var cases = [
-  { file: "./battle-test-data/contacts.json",
-    mapping: jsonCsvMapper.spec()
+  { // Just simple test, adds header row and uses callbacks
+    file: "./battle-test-data/contacts.json",
+    mapping: jsonCsvMapper.spec({addHeader: true})
                .field("_.id")
                .field("guid")
                .field("isActive").valueMapping({false: "disabled", true: "active"})
@@ -20,19 +21,35 @@ var cases = [
                .field("about").escape().valueCallbacks(jsonCsvMapper.CB_REMOVE_TRAILING_NEWLINE)
                .build()
   },
-  { file: "./battle-test-data/nested-contacts.json",
-   mapping: jsonCsvMapper.spec()
+  { // Uses nested fields
+    file: "./battle-test-data/nested-contacts.json",
+    mapping: jsonCsvMapper.spec()
              .field("age")
              .field("eyeColor")
              .field("name.first")
              .field("name.last")
              .build()
   },
-  { file: "./battle-test-data/nested-contacts.json",
-   mapping: jsonCsvMapper.spec()
+  { // Does aggregate nested object into single field
+    file: "./battle-test-data/nested-contacts.json",
+    mapping: jsonCsvMapper.spec()
              .field("age")
              .field("eyeColor")
-             .field("name").valueCallbacks(function(name) { return name.first + " " + name.last; })
+             .field("name").valueCallbacks(
+               function(name) { return name.first + " " + name.last; })
+             .build()
+  },
+  { // This one adds header row and "formats" date
+    file: "./battle-test-data/punches.json",
+    mapping: jsonCsvMapper.spec({addHeader: true})
+             .field("id")
+             .field("hit")
+             .field("time").valueCallbacks(
+               function(time) {
+                 // Here you would use something like moment.js for formatting date
+                 // Now we return epoch because we don't want additional dependencies here
+                 return Date.parse(time);
+               })
              .build()
   }
 ];
