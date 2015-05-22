@@ -1,4 +1,4 @@
-#  [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url]
+# [![Build Status](https://travis-ci.org/juhofriman/json-to-csv-mapper.svg?branch=master)](https://travis-ci.org/juhofriman/json-to-csv-mapper)
 
 > It maps json to csv using dsl
 
