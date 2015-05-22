@@ -20,22 +20,32 @@ var jsonCsvMapper = require('json-csv-mapper');
 // When you have an array of json objects
 var data = [
   { id: 1,
+    sex: 2,
     name: {
       first: "Jack",
       last: "kerouac"
     },
-  about: "He's super interesting writer and \"boheme\"" },
+    about: "He's super interesting writer and \"boheme\"" },
   { id: 2,
+    sex: 2,
     name: {
       first: "Ernest",
       last: "Hemingway"
     },
-  about: "He wrote \"The Man and the Sea\"" },
+    about: "He wrote \"The Man and the Sea\"" },
+  { id: 3,
+    sex: 1,
+    name: {
+      first: "Jane",
+      last: "Austen"
+    },
+    about: "was an English novelist whose works of romantic fiction" },
 ];
 
 // You can map them to csv using builder spec
 var csvStr = jsonCsvMapper.materialize(data, jsonCsvMapper.spec()
         .field("id")
+        .field("sex").valueMapping({1: "female", 2: "male"})
         .field("name.first")
         .field("name.last")
         .field("about").escape()
@@ -43,21 +53,25 @@ var csvStr = jsonCsvMapper.materialize(data, jsonCsvMapper.spec()
 
 
 // Should output
-1,Jack,kerouac,"He's super interesting writer and ""boheme"""
-2,Ernest,Hemingway,"He wrote ""The Man and the Sea"""
+1,male,Jack kerouac,"He's super interesting writer and ""boheme"""
+2,male,Ernest Hemingway,"He wrote ""The Man and the Sea"""
+3,female,Jane Austen,"was an English novelist whose works of romantic fiction"
 
 // You can get header fields and use callback functions for formatting values (even nested values like in this case)
 // If you have date data you can use something like moment.js for formatting on those callbacks
 var csvStr = jsonCsvMapper.materialize(data, jsonCsvMapper.spec({addHeader: true})
         .field("id")
+        .field("sex").valueMapping({1: "female", 2: "male"})
         .field("name").valueCallbacks(function(name) { return name.first + " " + name.last; })
         .field("about").escape()
         .build());
 
 // Should output
-id,name,about
-1,Jack kerouac,"He's super interesting writer and ""boheme"""
-2,Ernest Hemingway,"He wrote ""The Man and the Sea"""
+id,sex,name,about
+1,male,Jack kerouac,"He's super interesting writer and ""boheme"""
+2,male,Ernest Hemingway,"He wrote ""The Man and the Sea"""
+3,female,Jane Austen,"was an English novelist whose works of romantic fiction"
+
 ```
 What a nice piece of software!
 
