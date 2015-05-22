@@ -23,7 +23,7 @@ var data = [
     sex: 2,
     name: {
       first: "Jack",
-      last: "kerouac"
+      last: "Kerouac"
     },
     about: "He's super interesting writer and \"boheme\"" },
   { id: 2,
@@ -53,9 +53,9 @@ var csvStr = jsonCsvMapper.materialize(data, jsonCsvMapper.spec()
 
 
 // Should output
-1,male,Jack kerouac,"He's super interesting writer and ""boheme"""
-2,male,Ernest Hemingway,"He wrote ""The Man and the Sea"""
-3,female,Jane Austen,"was an English novelist whose works of romantic fiction"
+1,male,Jack,Kerouac,"He's super interesting writer and ""boheme"""
+2,male,Ernest,Hemingway,"He wrote ""The Man and the Sea"""
+3,female,Jane,Austen,"was an English novelist whose works of romantic fiction"
 
 // You can get header fields and use callback functions for formatting values (even nested values like in this case)
 // If you have date data you can use something like moment.js for formatting on those callbacks
@@ -68,7 +68,7 @@ var csvStr = jsonCsvMapper.materialize(data, jsonCsvMapper.spec({addHeader: true
 
 // Should output
 id,sex,name,about
-1,male,Jack kerouac,"He's super interesting writer and ""boheme"""
+1,male,Jack Kerouac,"He's super interesting writer and ""boheme"""
 2,male,Ernest Hemingway,"He wrote ""The Man and the Sea"""
 3,female,Jane Austen,"was an English novelist whose works of romantic fiction"
 
