@@ -42,6 +42,14 @@ describe('json-csv-mapper node module', function () {
                      build());
   });
 
+  it('must offer function for building escaped field', function() {
+    assert.deepEqual([{f: "bar", cb: [jsonCsvMapper.CB_QUOTE]}],
+                     jsonCsvMapper.spec()
+                     .field("bar")
+                     .escape()
+                     .build());
+  });
+
   it('must map empty objects to empty "rows"', function() {
     assert.deepEqual([[]], jsonCsvMapper.jsonToArray([{}], [{}]));
     assert.deepEqual([[], []], jsonCsvMapper.jsonToArray([{}, {}], [{}]));

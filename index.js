@@ -62,10 +62,12 @@ function createCsvRowFromObject(object, paths) {
   return csvRow;
 }
 
+function _CB_QUOTE(data) {
+  return '"' + data.replace(/"/g, '""') + '"';
+}
+
 module.exports =  {
-  CB_QUOTE: function(data) {
-    return '"' + data.replace(/"/g, '""') + '"';
-  },
+  CB_QUOTE: _CB_QUOTE,
   CB_REMOVE_TRAILING_NEWLINE: function(data) {
     return data.replace(/^\s+|\s+$/g, "");
   },
@@ -86,6 +88,14 @@ module.exports =  {
       },
       valueCallbacks: function() {
         this.currentField.cb = Array.prototype.slice.call(arguments);
+        return this;
+      },
+      escape: function() {
+        if(_.isUndefined(this.currentField.cb)) {
+          this.currentField.cb = [_CB_QUOTE];
+        } else {
+          this.currentField.cb.push(_CB_QUOTE);
+        }
         return this;
       },
       build: function() {

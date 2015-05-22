@@ -16,8 +16,8 @@ var cases = [
                .field("gender").valueCallbacks(function(data) { return data.toUpperCase(); })
                .field("email")
                .field("phone")
-               .field("address").valueCallbacks(jsonCsvMapper.CB_QUOTE)
-               .field("about").valueCallbacks(jsonCsvMapper.CB_REMOVE_TRAILING_NEWLINE, jsonCsvMapper.CB_QUOTE)
+               .field("address").escape()
+               .field("about").escape().valueCallbacks(jsonCsvMapper.CB_REMOVE_TRAILING_NEWLINE)
                .build()
   }
 ];
