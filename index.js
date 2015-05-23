@@ -16,7 +16,8 @@ function getCallbacksArray(mappingField) {
 
 function getMappingPaths(mapSpec) {
   var paths = [];
-  _.each(mapSpec, function(field) {
+  for(var i = 0; i < mapSpec.length; i++) {
+    var field = mapSpec[i];
     if(!_.isUndefined(field.f)){
       var path = field.f.split(".");
       paths.push(
@@ -24,14 +25,15 @@ function getMappingPaths(mapSpec) {
          cb: getCallbacksArray(field),
          mappings: field.m });
     }
-  });
+  }
   return paths;
 }
 
 function runCallbacks(entry, callbacks) {
-  _.each(callbacks, function(callback) {
-      entry = callback(entry);
-  });
+  // TODO: assert that callback is actually an function
+  for(var i = 0; i < callbacks.length; i++) {
+    entry = callbacks[i](entry);
+  }
   return entry;
 }
 
@@ -111,12 +113,13 @@ module.exports =  {
 
     var paths = getMappingPaths(mapSpec.fields);
     var csvRows = [];
-    if(mapSpec.config.addHeader) {
 
+    if(mapSpec.config.addHeader) {
+      // Generate header row if requested
       var headerRow = [];
-      _.each(paths, function(p) {
-        headerRow.push(p.path.join("."));
-      });
+      for(var i = 0; i < paths.length; i++) {
+        headerRow.push(paths[i].path.join("."));
+      }
       csvRows.push(headerRow);
     }
 
