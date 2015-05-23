@@ -3,6 +3,8 @@
 var fs = require('fs');
 var jsonCsvMapper = require('./');
 
+console.time("time");
+
 var cases = [
   { // Just simple test, adds header row and uses callbacks
     file: "./battle-test-data/contacts.json",
@@ -39,6 +41,14 @@ var cases = [
                function(name) { return name.first + " " + name.last; })
              .build()
   },
+  { // Simple three fields and no processing
+    file: "./battle-test-data/punches.json",
+    mapping: jsonCsvMapper.spec({addHeader: true})
+             .field("id")
+             .field("hit")
+             .field("time")
+             .build()
+  },
   { // This one adds header row and "formats" date
     file: "./battle-test-data/punches.json",
     mapping: jsonCsvMapper.spec({addHeader: true})
@@ -59,6 +69,13 @@ if(process.argv.length < 3) {
   process.exit(1);
 }
 
-console.log(jsonCsvMapper.materialize(
-  JSON.parse(fs.readFileSync(cases[process.argv[2]].file, 'utf8')),
-    cases[process.argv[2]].mapping));
+if(process.argv.indexOf("--time") > -1) {
+  jsonCsvMapper.materialize(
+    JSON.parse(fs.readFileSync(cases[process.argv[2]].file, 'utf8')),
+      cases[process.argv[2]].mapping);
+  console.timeEnd("time");
+} else {
+  console.log(jsonCsvMapper.materialize(
+    JSON.parse(fs.readFileSync(cases[process.argv[2]].file, 'utf8')),
+      cases[process.argv[2]].mapping));
+}
