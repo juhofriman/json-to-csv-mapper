@@ -69,10 +69,6 @@ function _CB_QUOTE(data) {
 }
 
 module.exports =  {
-  CB_QUOTE: _CB_QUOTE,
-  CB_REMOVE_TRAILING_NEWLINE: function(data) {
-    return data.replace(/^\s+|\s+$/g, "");
-  },
   spec: function(config) {
     return {
       config: config || { addHeader: false },
@@ -82,23 +78,19 @@ module.exports =  {
         if(this.currentField != null) {
           this.fields.push(this.currentField);
         }
-        this.currentField = {f: path};
+        this.currentField = { f: path, cb: []};
         return this;
       },
       valueMapping: function(mapping) {
         this.currentField.m = mapping;
         return this;
       },
-      valueCallbacks: function() {
-        this.currentField.cb = Array.prototype.slice.call(arguments);
+      callback: function(cbFunc) {
+        this.currentField.cb.push(cbFunc);
         return this;
       },
       escape: function() {
-        if(_.isUndefined(this.currentField.cb)) {
-          this.currentField.cb = [_CB_QUOTE];
-        } else {
-          this.currentField.cb.push(_CB_QUOTE);
-        }
+        this.callback(_CB_QUOTE);
         return this;
       },
       build: function() {

@@ -16,11 +16,11 @@ var cases = [
                .field("picture")
                .field("age")
                .field("eyeColor")
-               .field("gender").valueCallbacks(function(data) { return data.toUpperCase(); })
+               .field("gender").callback(function(data) { return data.toUpperCase(); })
                .field("email")
                .field("phone")
                .field("address").escape()
-               .field("about").escape().valueCallbacks(jsonCsvMapper.CB_REMOVE_TRAILING_NEWLINE)
+               .field("about").escape().callback(jsonCsvMapper.CB_REMOVE_TRAILING_NEWLINE)
                .build()
   },
   { // Uses nested fields
@@ -37,8 +37,9 @@ var cases = [
     mapping: jsonCsvMapper.spec()
              .field("age")
              .field("eyeColor")
-             .field("name").valueCallbacks(
-               function(name) { return name.first + " " + name.last; })
+             .field("name").callback(function(name) {
+                 return name.first + " " + name.last;
+               })
              .build()
   },
   { // Simple three fields and no processing
@@ -54,8 +55,7 @@ var cases = [
     mapping: jsonCsvMapper.spec({addHeader: true})
              .field("id")
              .field("hit")
-             .field("time").valueCallbacks(
-               function(time) {
+             .field("time").callback(function(time) {
                  // Here you would use something like moment.js for formatting date
                  // Now we return epoch because we don't want additional dependencies here
                  return Date.parse(time);

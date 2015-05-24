@@ -6,9 +6,9 @@ describe('json-csv-mapper node module', function () {
 
   it('must publish convenience builder for mapping spec', function() {
     assert.deepEqual(jsonCsvMapper.spec().build().fields, []);
-    assert.deepEqual(jsonCsvMapper.spec().field("bar").build().fields, [{f: "bar"}]);
+    assert.deepEqual(jsonCsvMapper.spec().field("bar").build().fields, [{f: "bar", cb: []}]);
     assert.deepEqual(jsonCsvMapper.spec().field("bar").field("foo.baz").build().fields,
-                    [{f: "bar"}, {f: "foo.baz"}]);
+                    [{f: "bar", cb: []}, {f: "foo.baz", cb: []}]);
   });
 
   it('must allow building field definition with value mappings', function() {
@@ -16,38 +16,43 @@ describe('json-csv-mapper node module', function () {
                      field("bar").
                      valueMapping({true: "1", false: "0"}).
                      build().fields,
-                    [{f: "bar", m: {true: "1", false: "0"}}]);
+                    [{f: "bar", cb: [], m: {true: "1", false: "0"}}]);
   });
 
   it('must allow building field definition with value callbacks', function() {
     var fooFunc = function(data) { return data; };
     var barFunc = function(data) { return data; };
 
-    assert.deepEqual(jsonCsvMapper.spec().
-                     field("bar").
-                     valueCallbacks().
-                     build().fields,
-                     [{f: "bar", cb: []}]);
+    // Callbacks must be empty is none is given
+    assert.deepEqual(jsonCsvMapper.spec()
+                     .field("bar")
+                     .build().fields[0].cb,
+                     []);
 
-    assert.deepEqual(jsonCsvMapper.spec().
-                     field("bar").
-                     valueCallbacks(fooFunc).
-                     build().fields,
-                     [{f: "bar", cb: [fooFunc]}]);
+    // When added callback must exist in callback array
+    assert.deepEqual(jsonCsvMapper.spec()
+                     .field("bar")
+                     .callback(fooFunc)
+                     .build().fields[0].cb,
+                     [fooFunc]);
 
-    assert.deepEqual(jsonCsvMapper.spec().
-                     field("bar").
-                     valueCallbacks(fooFunc, barFunc).
-                     build().fields,
-                     [{f: "bar", cb: [fooFunc, barFunc]}]);
+    // Callbacks can be chained
+    var chainedCallbacksSpec = jsonCsvMapper.spec()
+                              .field("bar")
+                              .callback(fooFunc)
+                              .callback(barFunc).build();
+
+    assert.deepEqual(chainedCallbacksSpec.fields[0].cb[0],
+                     fooFunc);
+    assert.deepEqual(chainedCallbacksSpec.fields[0].cb[1],
+                     barFunc);
   });
 
   it('must offer function for building escaped field', function() {
-    assert.deepEqual(jsonCsvMapper.spec()
+    assert(jsonCsvMapper.spec()
                      .field("bar")
                      .escape()
-                     .build().fields,
-                     [{f: "bar", cb: [jsonCsvMapper.CB_QUOTE]}]);
+                     .build().fields[0].cb[0]);
   });
 
   it('must map empty objects to empty "rows"', function() {
@@ -103,7 +108,7 @@ describe('json-csv-mapper node module', function () {
   it('must run callback if given', function() {
     assert.deepEqual(jsonCsvMapper.jsonToArray([{foo: "bar"}],
                                                jsonCsvMapper.spec().field("foo")
-                                                 .valueCallbacks(
+                                                 .callback(
                                                    function(data) {return data.toUpperCase(); }).build()),
                     [["BAR"]]);
 
@@ -112,28 +117,26 @@ describe('json-csv-mapper node module', function () {
   it('must allow running callbacks to nested fields for formatting', function() {
     assert.deepEqual(jsonCsvMapper.jsonToArray([{name: {first: "Rick", last: "Wakeman"}}],
                                                jsonCsvMapper.spec().field("name")
-                                                 .valueCallbacks(
+                                                 .callback(
                                                    function(data) {return data.first + " " + data.last;}).build()),
                     [["Rick Wakeman"]]);
   });
 
-  it('must publish common use callbacks', function() {
-    // No it must not. Use builder for these. This is implemented as escape() for now
-    assert.deepEqual(jsonCsvMapper.jsonToArray([{foo: "bar"}],
-                                             jsonCsvMapper.spec().field("foo").valueCallbacks(jsonCsvMapper.CB_QUOTE).build()),
-                    [["\"bar\""]]);
-  });
 
-  it('must run multiple callbacks if cb is an array', function() {
-    // No, builder should publish single callback(fn) which can be chained
+  it('must run multiple callbacks if multiple callbacks are chained', function() {
     assert.deepEqual(jsonCsvMapper.jsonToArray([{foo: "bar"}],
                                                jsonCsvMapper.spec().field("foo")
-                                                 .valueCallbacks(jsonCsvMapper.CB_QUOTE,
-                                                    function(data) {return data.toUpperCase(); }).build()),
+                                                 .callback(function(data) {
+                                                   return '"' + data + '"';
+                                                 })
+                                                 .callback(function(data) {
+                                                    return data.toUpperCase();
+                                                 })
+                                                 .build()),
                     [["\"BAR\""]]);
   });
 
-  it('must escape contained " when CB_QUOTE callback is invoked', function() {
+  it('must escape contained " when escape is registered to field', function() {
     assert.deepEqual(jsonCsvMapper.jsonToArray([{foo: 'this "is" it!'}],
                                                jsonCsvMapper.spec().field("foo").escape().build()),
                     [['"this ""is"" it!"']]);

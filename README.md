@@ -62,7 +62,7 @@ var csvStr = jsonCsvMapper.materialize(data, jsonCsvMapper.spec()
 var csvStr = jsonCsvMapper.materialize(data, jsonCsvMapper.spec({addHeader: true})
         .field("id")
         .field("sex").valueMapping({1: "female", 2: "male"})
-        .field("name").valueCallbacks(function(name) { return name.first + " " + name.last; })
+        .field("name").callback(function(name) { return name.first + " " + name.last; })
         .field("about").escape()
         .build());
 
