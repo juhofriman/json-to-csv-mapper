@@ -72,6 +72,16 @@ module.exports =  {
         return this;
       },
       mapping: function(mapping) {
+        // Dunno, if this is actuallyu a reasonable way of
+        // checking whether mapping is associative
+        // XXX: Could keys me functions as well? truthy -> change to value
+        try {
+          _.keys(mapping);
+        } catch (err) {
+          throw Error('Registering mapping for field: "' +
+                      this.currentField.f + '" but that: "' +
+                      mapping + '" is not associative!');
+        }
         this.currentField.m = mapping;
         return this;
       },

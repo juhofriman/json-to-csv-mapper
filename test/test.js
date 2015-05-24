@@ -19,6 +19,12 @@ describe('json-csv-mapper node module', function () {
                      [{f: "bar", cb: [], m: {true: "1", false: "0"}}]);
   });
 
+  it('must barf if mapping(m) m is not a map', function() {
+      assert.throws(function() {
+        jsonCsvMapper.spec().field("bar").mapping("Can't use me for mapping!");
+      });
+  });
+
   it('must allow building field definition with value callbacks', function() {
     var fooFunc = function(data) { return data; };
     var barFunc = function(data) { return data; };
