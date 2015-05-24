@@ -77,6 +77,8 @@ module.exports =  {
         // Dunno, if this is actuallyu a reasonable way of
         // checking whether mapping is associative
         // XXX: Could keys me functions as well? truthy -> change to value
+
+        // This implementation breaks build on iojs.
         try {
           _.keys(mapping);
         } catch (err) {
