@@ -11,7 +11,7 @@ var cases = [
     mapping: jsonCsvMapper.spec({addHeader: true})
                .field("_.id")
                .field("guid")
-               .field("isActive").valueMapping({false: "disabled", true: "active"})
+               .field("isActive").mapping({false: "disabled", true: "active"})
                .field("balance")
                .field("picture")
                .field("age")
@@ -20,7 +20,7 @@ var cases = [
                .field("email")
                .field("phone")
                .field("address").escape()
-               .field("about").escape().callback(jsonCsvMapper.CB_REMOVE_TRAILING_NEWLINE)
+               .field("about").escape()
                .build()
   },
   { // Uses nested fields

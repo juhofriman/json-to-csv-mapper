@@ -12,11 +12,11 @@ describe('json-csv-mapper node module', function () {
   });
 
   it('must allow building field definition with value mappings', function() {
-    assert.deepEqual(jsonCsvMapper.spec().
-                     field("bar").
-                     valueMapping({true: "1", false: "0"}).
-                     build().fields,
-                    [{f: "bar", cb: [], m: {true: "1", false: "0"}}]);
+    assert.deepEqual(jsonCsvMapper.spec()
+                     .field("bar")
+                     .mapping({true: "1", false: "0"})
+                     .build().fields,
+                     [{f: "bar", cb: [], m: {true: "1", false: "0"}}]);
   });
 
   it('must allow building field definition with value callbacks', function() {
@@ -151,7 +151,7 @@ describe('json-csv-mapper node module', function () {
                                                {name: "Jack", sex: 2}],
                                                jsonCsvMapper.spec()
                                                  .field("name")
-                                                 .field("sex").valueMapping({1: "female", 2: "male"})
+                                                 .field("sex").mapping({1: "female", 2: "male"})
                                                  .build()),
                     [["Jill", "female"], ["Jack", "male"]]);
 

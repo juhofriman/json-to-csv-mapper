@@ -83,7 +83,7 @@ module.exports =  {
         this.currentField = { f: path, cb: []};
         return this;
       },
-      valueMapping: function(mapping) {
+      mapping: function(mapping) {
         this.currentField.m = mapping;
         return this;
       },

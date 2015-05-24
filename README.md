@@ -45,7 +45,7 @@ var data = [
 // You can map them to csv using builder spec
 var csvStr = jsonCsvMapper.materialize(data, jsonCsvMapper.spec()
         .field("id")
-        .field("sex").valueMapping({1: "female", 2: "male"})
+        .field("sex").mapping({1: "female", 2: "male"})
         .field("name.first")
         .field("name.last")
         .field("about").escape()
@@ -61,7 +61,7 @@ var csvStr = jsonCsvMapper.materialize(data, jsonCsvMapper.spec()
 // If you have date data you can use something like moment.js for formatting on those callbacks
 var csvStr = jsonCsvMapper.materialize(data, jsonCsvMapper.spec({addHeader: true})
         .field("id")
-        .field("sex").valueMapping({1: "female", 2: "male"})
+        .field("sex").mapping({1: "female", 2: "male"})
         .field("name").callback(function(name) { return name.first + " " + name.last; })
         .field("about").escape()
         .build());
