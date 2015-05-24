@@ -72,6 +72,12 @@ id,sex,name,about
 2,male,Ernest Hemingway,"He wrote ""The Man and the Sea"""
 3,female,Jane Austen,"was an English novelist whose works of romantic fiction"
 
+// mappings can even contain functions for modifications! And on top of that it can contain both at the same time!
+jsonCsvMapper.spec()
+        .field("field").mapping({1: function(key) { return "Hello: " + key }
+                                 2: "No function on this one"});
+
+
 ```
 What a nice piece of software!
 

@@ -18,7 +18,6 @@ function getMappingPaths(mapSpec) {
 }
 
 function runCallbacks(entry, callbacks) {
-  // TODO: assert that callback is actually an function
   for(var i = 0; i < callbacks.length; i++) {
     entry = callbacks[i](entry);
   }
@@ -26,6 +25,9 @@ function runCallbacks(entry, callbacks) {
 }
 
 function mapValue(entry, mappings) {
+  if(_.isFunction(mappings[entry])) {
+    return mappings[entry](entry);
+  }
   return mappings[entry];
 }
 

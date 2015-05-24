@@ -169,6 +169,30 @@ describe('json-csv-mapper node module', function () {
 
   });
 
+  it('must support value mapping with functions', function() {
+    assert.deepEqual(jsonCsvMapper.jsonToArray([{name: "Jill", sex: 1},
+                                               {name: "Jack", sex: 2}],
+                                               jsonCsvMapper.spec()
+                                                 .field("name")
+                                                 .field("sex").mapping(
+                                                   {1: function(data) { return "func1-" + data; },
+                                                    2: function(data) { return "func2-" + data; } })
+                                                 .build()),
+                    [["Jill", "func1-1"], ["Jack", "func2-2"]]);
+
+  });
+
+  it('must support both functions and values in mappings simultaneously', function() {
+    assert.deepEqual(jsonCsvMapper.jsonToArray([{ field: "value1"},
+                                                { field: "value2"}],
+                                              jsonCsvMapper.spec()
+                                               .field("field")
+                                               .mapping({"value1": function(key) { return "function1:" + key; },
+                                                         "value2": "direct value" })
+                                               .build()),
+                     [["function1:value1"],["direct value"]]);
+  });
+
   it('must add field names header if requested', function() {
     assert.deepEqual(jsonCsvMapper.jsonToArray([],
                                                jsonCsvMapper.spec({addHeader: true})
