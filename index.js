@@ -76,6 +76,11 @@ module.exports =  {
         return this;
       },
       callback: function(cbFunc) {
+        if(!_.isFunction(cbFunc)) {
+          throw Error('Registering callback for field: "' +
+                      this.currentField.f + '" but that: "' +
+                      cbFunc + '" is not a function!');
+        }
         this.currentField.cb.push(cbFunc);
         return this;
       },

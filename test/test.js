@@ -48,6 +48,12 @@ describe('json-csv-mapper node module', function () {
                      barFunc);
   });
 
+  it('must barf if callback given is not a function', function() {
+    assert.throws(function() {
+        jsonCsvMapper.spec().field("bar").callback("Can't call me");
+      });
+  });
+
   it('must offer function for building escaped field', function() {
     assert(jsonCsvMapper.spec()
                      .field("bar")
