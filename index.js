@@ -2,18 +2,6 @@
 
 var _ = require('underscore-node');
 
-function getCallbacksArray(mappingField) {
-  if(_.isUndefined(mappingField.cb)) {
-    return [];
-  }
-  if(_.isArray(mappingField.cb)) {
-    return mappingField.cb;
-  }
-  if(_.isFunction(mappingField.cb)) {
-    return [mappingField.cb];
-  }
-}
-
 function getMappingPaths(mapSpec) {
   var paths = [];
   for(var i = 0; i < mapSpec.length; i++) {
@@ -22,7 +10,7 @@ function getMappingPaths(mapSpec) {
       var path = field.f.split(".");
       paths.push(
         {path: path,
-         cb: getCallbacksArray(field),
+         cb: field.cb,
          mappings: field.m });
     }
   }
