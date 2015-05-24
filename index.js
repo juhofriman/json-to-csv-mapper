@@ -50,17 +50,19 @@ function modify(entry, path) {
 
 function createCsvRowFromObject(object, paths) {
   var csvRow = [];
-  _.each(paths, function(path) {
+  for(var i = 0; i < paths.length; i++) {
     var entry = object;
-    _.each(path.path, function(token) {
-      if(!_.isUndefined(entry)) {
+    var field = paths[i];
+    for(var a = 0; a < field.path.length; a++) {
+      var token = field.path[a];
+      if(!_.isUndefined(entry[token])) {
         entry = entry[token];
       }
-    });
-    if(!_.isUndefined(entry)) {
-      csvRow.push(modify(entry, path));
     }
-  });
+    if(entry !== object) {
+      csvRow.push(modify(entry, field));
+    }
+  }
   return csvRow;
 }
 
